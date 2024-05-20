@@ -23,5 +23,5 @@ pip install -r requirements.txt
 
 You can then run the main.py script by 
 ```bash
-python main.pu
+python main.py
 ```
