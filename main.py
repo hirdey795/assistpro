@@ -13,14 +13,6 @@ XPath Cheat Sheet = "https://quickref.me/xpath"
 Assist.org = "https://assist.org"
 Extra websites = " "
 """
-
-# # for holding the resultant list 
-# page_url = "https://assist.org"
-# options = Options()
-# options.add_experimental_option("detach", True) # So browser don't close prematurely
-# driver = webdriver.Chrome(options=options)
-# driver.get(page_url)
-
 class WebBot():
     
     def __init__(self):
