@@ -4,6 +4,7 @@ Work in progress add more later
 1. Start scraping all of the articulations for EECS SCC -> Berkeley, tables of course Titles
 2. Have JSON file architecture to store articulations
 3. Maybe try BS4 instead of selenium
+4. Format JSON and architecture
 
 
 # Installation
