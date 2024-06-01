@@ -5,6 +5,9 @@ Work in progress add more later
 2. Start to modulate methods in the class to scrape all of the UNI and Colleges articulations onto JSON
 4. Format JSON and architecture
 
+# DEMO
+![GIF](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHRpbWw1em00MHh4OGxuYW9heHBkajg4eGxyNjZuZHB2N3Bpa2loNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QpDKozmCN3XGi2YHBV/giphy.gif)
+
 # Progress:
 
 Got data for EECS Major articulation for UC Berkeley from Sacramento City College (SCC) compared to Diablo Valley College
