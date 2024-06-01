@@ -3,6 +3,7 @@ Work in progress add more later
 # TODO:
 1. Start scraping all of the articulations for EECS SCC -> Berkeley, tables of course Titles
 2. Start to modulate methods in the class to scrape all of the UNI and Colleges articulations onto JSON
+3. UC to CC/ CSU to CC
 4. Format JSON and architecture
 
 # DEMO
