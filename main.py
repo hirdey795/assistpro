@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+import json
 import time
 
 """
@@ -26,7 +27,7 @@ class WebBot():
         self.url = "https://assist.org"
         print("Initialized finished...")
         
-    def open_articulation_agreements(self):
+    def open_articulation_agreements(self, institution_num, agreement_num):
         
         driver = self.driver
         actions = ActionChains(driver)
@@ -53,7 +54,7 @@ class WebBot():
             
             # Enter college
             # 113 = Sacramento City College
-            institution = driver.find_element(By.XPATH, "//div[contains(@id, '-113') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
+            institution = driver.find_element(By.XPATH, f"//div[contains(@id, '-{institution_num}') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
             institution.click()
             
             # Hack: Slow down to enter inputs properly, else it won't work
@@ -72,7 +73,7 @@ class WebBot():
             
             # select University
             # 26 = Berkeley
-            agreement = driver.find_element(By.XPATH, "//div[contains(@id, '-26') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
+            agreement = driver.find_element(By.XPATH, f"//div[contains(@id, '-{agreement_num}') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
             agreement.click()
             
             # Click on agreement HACK
@@ -105,16 +106,71 @@ class WebBot():
             print(e)
             driver.quit()
             return
+        
+        """
+        This sentence is to take all of the courses and create a dictionary 
+        
+        Key: MATH1A, Value: MATH400 ("Sacramento City College"), MATH400 ("American River College")
+        e.g.
+        
+        Agreement = UNI + "<->" + COLLEGE
+        
+        { 
+            "Berkeley <-> Sacramento City College" : { "MATH1A" : "MATH400" }
+        }
+        """
+        time.sleep(1)
+        try:
+            uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
+            collegeName = driver.find_element(By.XPATH, "//div[@class='instSending']/p[@class='inst']").text
             
+            uniCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowReceiving']")
+            collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowSending']")
+            
+            uniCourses = [element.text.split("\n")[0] for element in uniCoursesElements]
+            collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
+            
+            print("----Uni Courses----")
+            print(uniCourses)
+            print("----")
+            
+            print("----College Courses---")
+            print(collegeCourses)
+            print("----")
+            
+            articulation_dict = {uniCourses:collegeCourses for uniCourses, collegeCourses in zip(uniCourses, collegeCourses)}
+            
+            data = {f"{uniName, collegeName}" : articulation_dict}
+            
+            fileName = "EECS_BERKELEY.json"
+            
+            # Load existing data from file
+            with open(fileName, "r") as file:
+                existing_data = json.load(file)
+                
+            # Merge data from new to old
+            existing_data.update(data)
+            
+            with open(fileName, "w") as file:
+                json.dump(existing_data, file, indent=4)
+                print("Added new data to file")
+        except Exception as e:
+            print(e)
+         
     def quit(self):
         self.driver.quit()
         
-        
-        
 if __name__ == "__main__":
+    """ 
+    Testing:
+    major = 32 is EECS major
+    institution = 113 is sacramento city college
+    institution = 57 is diablo valley
+    agreement = 26 is uc berkeley
+    """
     bot = WebBot()
-    bot.open_articulation_agreements()
-    print("Now scraping")
-    bot.scrape_articulations(32)
-    print("Found 32")   
+    bot.open_articulation_agreements(57, 26) # institution = 113, agreement = 26
+    bot.scrape_articulations(32)  
+    time.sleep(4)
+    bot.quit()
     
