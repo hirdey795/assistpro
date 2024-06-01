@@ -142,6 +142,9 @@ class WebBot():
             
             data = {f"{uniName, collegeName}" : articulation_dict}
             
+            """ 
+            HACK Create file on writing to it
+            """
             fileName = "EECS_BERKELEY.json"
             
             # Load existing data from file
@@ -154,6 +157,7 @@ class WebBot():
             with open(fileName, "w") as file:
                 json.dump(existing_data, file, indent=4)
                 print("Added new data to file")
+                
         except Exception as e:
             print(e)
          
