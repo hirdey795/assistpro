@@ -29,7 +29,22 @@ The Course offered at Community College (Layer 3) that articulates to the course
 ```bash
 {"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : ["MATH 400"]} // OR
 {"UC Berkeley" : ["ENGLISH R1A" : ["De Anza College" : ["EWRT 1A","EWRT 1AH","ESL 5"]]]}
-NOTE:: 1.The list on Layer 4 indicates ALL the difference course articulated.
-       2.In case of articulation in a series, we can get around it using a potential fifth layer
-FOR EXAMPLE:
-[Agreement](https://assist.org/transfer/resultsyear=74&institution=89&agreement=126&agreementType=from&view=agreement&viewBy=major&viewSendingAgreements=false&viewByKey=74%2F126%2Fto%2F89%2Fmajor%2F9034e3b6-1889-4b83-aa31-42ed05015380) between UCD and SCC on Physics
+```
+## Note 
+1. The list on Layer 4 indicates ALL the different course articulated.<br>
+2. In case of articulation in a series, we can get around it using a potential fifth layer.
+## For Example:
+ [Agreement](https://assist.org/transfer/results?year=74&institution=89&agreement=126&agreementType=from&view=agreement&viewBy=major&viewSendingAgreements=false&viewByKey=74%2F126%2Fto%2F89%2FMajor%2F9034e3b6-1889-4b83-aa31-42ed05015380) between UCD and SCC on Physics.
+As the compeletion of 3 courses at SCC articulates to PHY 009A at UC Davis. We can create an additional layer 5:
+```bash
+{"UC Davis" : ["PHY 009A" : ["Sacramento City College" : [["PHY 410","PHY 420","PY 430"]]}
+```
+# Difference between fourth and potential fifth layer
+All the courses in the fourth layer can be taken to complete the requirement, meaning
+```bash
+["CISP 400", "CISP 401"] means CISP 400 OR CISP 401
+```
+All the courses in the fifth layer needs to be done to complete the requirement, meaning
+```bash
+[["PHY 410","PHY 420","PY 430"]] meaning PHY 410 AND PHY 420 AND PHY 430
+```
