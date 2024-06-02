@@ -5,3 +5,9 @@ Create a four-layered dictionary that would storage the whole data in this manne
 ```bash
 {Layer 1 : [Layer 2 : [Layer 3 : [Layer 4]}
 ```
+# Layer 1 
+The four-year institutions // 9 UCs and 23 CSUs
+```bash
+{"UC Berkeley" : [Layer 2 : [Layer 3 : [Layer 4]}
+```
+# Layer 2
