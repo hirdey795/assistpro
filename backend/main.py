@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+import os
 import json
 import time
 
@@ -22,7 +23,7 @@ class WebBot():
         
         options = Options()
         options.add_experimental_option("detach", True) # So browser don't close prematurely
-        options.add_argument("--window-size=1920,1080")  # Adjust the width and height as needed
+        options.add_argument("--window-size=1440,960")  # Adjust the width and height as needed
         self.driver = webdriver.Chrome(options=options)
         self.url = "https://assist.org"
         print("Initialized finished...")
@@ -94,6 +95,9 @@ class WebBot():
         """ 
         Args:
         major: Int
+        
+        Output:
+        data: Dict
         """
         driver = self.driver
         actions = ActionChains(driver)
@@ -108,21 +112,20 @@ class WebBot():
             return
         
         """
-        This sentence is to take all of the courses and create a dictionary 
-        
         Key: MATH1A, Value: MATH400 ("Sacramento City College"), MATH400 ("American River College")
         e.g.
         
         Agreement = UNI + "<->" + COLLEGE
         
         { 
-            "Berkeley <-> Sacramento City College" : { "MATH1A" : "MATH400" }
+            "Berkeley, Sacramento City College" : { "MATH1A" : "MATH400" }
         }
         """
         time.sleep(1)
         try:
             uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
             collegeName = driver.find_element(By.XPATH, "//div[@class='instSending']/p[@class='inst']").text
+            majorName = driver.find_element(By.XPATH, "//div[@class='resultsBoxHeader']/h1").text
             
             uniCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowReceiving']")
             collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowSending']")
@@ -140,26 +143,13 @@ class WebBot():
             
             articulation_dict = {uniCourses:collegeCourses for uniCourses, collegeCourses in zip(uniCourses, collegeCourses)}
             
-            data = {f"{uniName, collegeName}" : articulation_dict}
+            data = {f"{uniName, collegeName}" : (majorName, articulation_dict)}
             
-            """ 
-            HACK Create file on writing to it
-            """
-            fileName = "EECS_BERKELEY.json"
-            
-            # Load existing data from file
-            with open(fileName, "r") as file:
-                existing_data = json.load(file)
-                
-            # Merge data from new to old
-            existing_data.update(data)
-            
-            with open(fileName, "w") as file:
-                json.dump(existing_data, file, indent=4)
-                print("Added new data to file")
-                
+            return data
+        
         except Exception as e:
             print(e)
+            return 0
          
     def quit(self):
         self.driver.quit()
@@ -167,11 +157,26 @@ class WebBot():
         
         
 # Create a separate writing to file function
-def write_to_file(file):
-    """ 
-    Add content
-    """
-    pass
+def write_data_to_file(file_path, data):
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    
+    try:
+        with open(file_path, "r") as file:
+            existing_data = json.load(file)
+    except:
+        with open(file_path, "w") as file:
+            json.dump(data, file, indent=4)
+            print("Added new data to file")
+            
+            return 0
+        
+     # Merge data from new to old
+    existing_data.update(data)
+    
+    with open(file_path, "w") as file:
+        json.dump(existing_data, file, indent=4)
+        print("Added new data to file")
+        
         
 if __name__ == "__main__":
     """ 
@@ -182,8 +187,10 @@ if __name__ == "__main__":
     agreement = 26 is uc berkeley
     """
     bot = WebBot()
-    bot.open_articulation_agreements(57, 26) # institution = 113, agreement = 26
-    bot.scrape_articulations(32)  
+    file_name = "data_files/EECS_BERKELEY.json"
+    bot.open_articulation_agreements(113, 26) # institution = 113, agreement = 26
+    data = bot.scrape_articulations(32)
+    write_data_to_file(file_name, data)
     time.sleep(4)
     bot.quit()
     

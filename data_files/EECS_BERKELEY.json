@@ -1,0 +1,60 @@
+{
+    "('To: University of California, Berkeley', 'From: Diablo Valley College')": [
+        "Electrical Engineering & Computer Sciences, Lower Division B.S.",
+        {
+            "MATH 1A": "MATH 192",
+            "MATH 1B": "MATH 193",
+            "MATH 53": "MATH 292",
+            "MATH 54": "MATH 194",
+            "PHYSICS 7A": "PHYS 130",
+            "PHYSICS 7B": "PHYS 230",
+            "ENGLISH R1A": "ENGL 122",
+            "ENGLISH R1B": "ENGL 123",
+            "ASTRON 7A": "No Course Articulated",
+            "ASTRON 7B": "No Course Articulated",
+            "BIOLOGY 1A": "BIOSC 130",
+            "BIOLOGY 1B": "BIOSC 131",
+            "CHEM 1A": "CHEM 120",
+            "CHEM 1B": "CHEM 121",
+            "CHEM 3A": "CHEM 226",
+            "CHEM 3B": "CHEM 227",
+            "MCELLBI 32": "BIOSC 120",
+            "PHYSICS 7C": "PHYS 231",
+            "COMPSCI 61A": "No Course Articulated",
+            "COMPSCI 61B": "COMSC 210",
+            "COMPSCI 61C": "COMSC 260",
+            "COMPSCI 70": "This course must be taken at the university after transfer",
+            "EECS 16A": "No Course Articulated",
+            "EECS 16B": "No Course Articulated"
+        }
+    ],
+    "('To: University of California, Berkeley', 'From: Sacramento City College')": [
+        "Electrical Engineering & Computer Sciences, Lower Division B.S.",
+        {
+            "MATH 1A": "MATH 400",
+            "MATH 1B": "MATH 401",
+            "MATH 53": "MATH 402",
+            "MATH 54": "MATH 420",
+            "PHYSICS 7A": "PHYS 410",
+            "PHYSICS 7B": "PHYS 420",
+            "ENGLISH R1A": "ENGWR 300",
+            "ENGLISH R1B": "ENGWR 301",
+            "ASTRON 7A": "No Course Articulated",
+            "ASTRON 7B": "No Course Articulated",
+            "BIOLOGY 1A": "BIOL 402",
+            "BIOLOGY 1B": "BIOL 412",
+            "CHEM 1A": "CHEM 400",
+            "CHEM 1B": "CHEM 401",
+            "CHEM 3A": "CHEM 420",
+            "CHEM 3B": "CHEM 421",
+            "MCELLBI 32": "BIOL 430",
+            "PHYSICS 7C": "PHYS 430",
+            "COMPSCI 61A": "No Course Articulated",
+            "COMPSCI 61B": "CISP 430",
+            "COMPSCI 61C": "No Course Articulated",
+            "COMPSCI 70": "This course must be taken at the university after transfer",
+            "EECS 16A": "No Course Articulated",
+            "EECS 16B": "No Course Articulated"
+        }
+    ]
+}
