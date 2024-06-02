@@ -164,6 +164,15 @@ class WebBot():
     def quit(self):
         self.driver.quit()
         
+        
+        
+# Create a separate writing to file function
+def write_to_file(file):
+    """ 
+    Add content
+    """
+    pass
+        
 if __name__ == "__main__":
     """ 
     Testing:

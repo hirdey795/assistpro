@@ -102,3 +102,18 @@ You can then run the main.py script by
 python main.py
 ```
 
+# To run website
+
+## Install independencies
+
+```bash
+cd client
+npm install
+```
+
+## Run server
+
+```bash
+npm run dev
+```
+
