@@ -11,3 +11,8 @@ The four-year institutions // 9 UCs and 23 CSUs
 {"UC Berkeley" : [Layer 2 : [Layer 3 : [Layer 4]}
 ```
 # Layer 2
+The Lower Division Courses offered at UCs/CSUs // NOT MAJORS
+```bash
+{"UC Berkeley" : ["EECS" : [Layer 3 : [Layer 4]} // INCORRECT
+{"UC Berkeley" : ["MATH 1A" : [Layer 3 : [Layer 4]} // CORRECT
+```
