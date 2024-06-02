@@ -25,7 +25,7 @@ NOTE: If there exists no combination between two distnict colleges in Layer 1 an
 Need to Think more about that.
 ```
 # Layer 4
-The Course offered at Community College (Layer 3) that articulates to the course listed at Layer 2.
+The Course offered at Community College (Layer 3) that articulates to the course listed at Layer 2. IF NO Course articulated then Layer 4 => null
 ```bash
 {"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : ["MATH 400"]} // OR
 {"UC Berkeley" : ["ENGLISH R1A" : ["De Anza College" : ["EWRT 1A","EWRT 1AH","ESL 5"]]]}
@@ -48,3 +48,17 @@ All the courses in the fifth layer needs to be done to complete the requirement,
 ```bash
 [["PHY 410","PHY 420","PY 430"]] meaning PHY 410 AND PHY 420 AND PHY 430
 ```
+If incase there are 2 course combinations like MATH 1A AND 1B OR MATH 1C
+THEN WE CAN USE LAYER 4 AND 5 AT THE SAME TIME
+```bash
+[["MATH 1A","MATH 1B"], "MATH 1C"]
+```
+# FOR EXAMPLE
+The following is an example of all the things explained
+```bash
+{"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : "MATH 400", "De Anza College" : "MATH 1AH", "Some other College" : null], "MATH 1B" : ["Sacramento City College" : "MATH 401"]]
+, "UC Davis" : ["PHY 009A":["Sacramento City College" : ["PHY 410","PHY 420","PY 430"]]]}
+```
+# Other Things to Consider
+1. Some Colleges have more flexible course combinations.<br>
+2. Figuring out logic for looping out the courses without redundency.
