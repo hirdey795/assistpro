@@ -170,7 +170,8 @@ def write_data_to_file(file_path, data):
             
             return 0
         
-     # Merge data from new to old
+    # Merge data from new to old
+    existing_data = {}
     existing_data.update(data)
     
     with open(file_path, "w") as file:
