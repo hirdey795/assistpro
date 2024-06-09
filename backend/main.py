@@ -1,4 +1,3 @@
-# importing necessary packages 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -11,6 +10,9 @@ import json
 import time
 
 """
+TODO: Search "All Majors" instead of EECS for now
+    : Add "And" / "Or" to with both sides of articulations
+
 XPath Cheat Sheet = "https://quickref.me/xpath"
 Assist.org = "https://assist.org"
 Extra websites = " "
@@ -170,6 +172,7 @@ if __name__ == "__main__":
     Testing:
     Insitution = 136 (UCB)
     Agreement = 106 (SCC)
+    Major = 32 (EECS)
     """
     bot = WebBot()
     file_name = "data_files/EECS_BERKELEY.json"
