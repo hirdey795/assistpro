@@ -27,7 +27,7 @@ class WebBot():
         self.driver = webdriver.Chrome(options=options)
         self.url = "https://assist.org"
         print("Initialized finished...")
-        
+            
     def open_articulation_agreements(self, institution_num, agreement_num):
         
         driver = self.driver
@@ -35,17 +35,7 @@ class WebBot():
         driver.get(self.url)
         print("Reading data...")
         
-        """ 
-        THIS IS A HACK FOR SCC -> BEKRELEY EECS FOR NOW, 
-        CHANGE LATER FOR A LOOP FOR ALL UNIVERSITIES
-        """
-        
         try:
-            
-            """ 
-            HACK
-            Enter Institution for Sacramento City College
-            """
             
             # Scroll to make drop down clickable to enter institution
             dropDownInstitution = WebDriverWait(driver, 10).until(
@@ -53,8 +43,7 @@ class WebBot():
             )
             actions.move_to_element(dropDownInstitution).click().perform()
             
-            # Enter college
-            # 113 = Sacramento City College
+            # Enter Uni
             institution = driver.find_element(By.XPATH, f"//div[contains(@id, '-{institution_num}') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
             institution.click()
             
@@ -72,10 +61,12 @@ class WebBot():
             )
             actions.move_to_element(dropDownAgreement).click().perform()
             
-            # select University
-            # 26 = Berkeley
-            agreement = driver.find_element(By.XPATH, f"//div[contains(@id, '-{agreement_num}') and @class='ng-option' and @role='option']/span[@class='ng-option-label']")
-            agreement.click()
+            # select College
+            agreement = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, f"//div[contains(@id, '-{agreement_num}')]"))
+            )
+            actions.move_to_element(agreement).click().perform()
+            # agreement.click()
             
             # Click on agreement HACK
             driver.find_element(By.XPATH, "/html/body/app-root/div[2]/app-home-component/section[@class='content']/app-form-container/div[@class='formArea']/div[@id='agreementInformationForm']/app-transfer-agreements-form/div[@class='panel agreements']/div[@class='panel-content']/form[@id='transfer-agreement-search']/div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']").click()
@@ -85,11 +76,6 @@ class WebBot():
             self.driver.quit()
             return
         
-        
-    """ 
-    Scraping information for articulation.
-    HACK: This is for EECS major for now
-    """
     # EECS: //div[@class='viewByRow'][32]
     def scrape_articulations(self, major):
         """ 
@@ -132,7 +118,7 @@ class WebBot():
             
             uniCourses = [element.text.split("\n")[0] for element in uniCoursesElements]
             collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
-            
+                    
             print("----Uni Courses----")
             print(uniCourses)
             print("----")
@@ -182,14 +168,12 @@ def write_data_to_file(file_path, data):
 if __name__ == "__main__":
     """ 
     Testing:
-    major = 32 is EECS major
-    institution = 113 is sacramento city college
-    institution = 57 is diablo valley
-    agreement = 26 is uc berkeley
+    Insitution = 136 (UCB)
+    Agreement = 106 (SCC)
     """
     bot = WebBot()
     file_name = "data_files/EECS_BERKELEY.json"
-    bot.open_articulation_agreements(113, 26) # institution = 113, agreement = 26
+    bot.open_articulation_agreements(136, 106) # institution = 113, agreement = 26
     data = bot.scrape_articulations(32)
     write_data_to_file(file_name, data)
     time.sleep(4)
