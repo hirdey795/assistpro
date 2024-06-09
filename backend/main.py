@@ -176,7 +176,7 @@ if __name__ == "__main__":
     """
     bot = WebBot()
     file_name = "data_files/EECS_BERKELEY.json"
-    bot.open_articulation_agreements(136, 106) # institution = 113, agreement = 26
+    bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106
     data = bot.scrape_articulations(32)
     write_data_to_file(file_name, data)
     time.sleep(4)
