@@ -1,125 +1,64 @@
-Work in progress add more later
-
-# TODO:
-1. Start scraping all of the articulations for EECS SCC -> Berkeley, tables of course Titles
-2. Start to modulate methods in the class to scrape all of the UNI and Colleges articulations onto JSON
-3. UC to CC/ CSU to CC
-4. Format JSON and architecture
-
-# DEMO
-![GIF](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHRpbWw1em00MHh4OGxuYW9heHBkajg4eGxyNjZuZHB2N3Bpa2loNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QpDKozmCN3XGi2YHBV/giphy.gif)
-
-# Progress:
-
-Got data for EECS Major articulation for UC Berkeley from Sacramento City College (SCC) compared to Diablo Valley College
-
-Diablo Valley College has courses that articulates which SCC does not, therefore students can take theses classes to be more competitive
-
-```json
-{
-    "('To: University of California, Berkeley', 'From: Diablo Valley College')": [
-        "Electrical Engineering & Computer Sciences, Lower Division B.S.",
-        {
-            "MATH 1A": "MATH 192",
-            "MATH 1B": "MATH 193",
-            "MATH 53": "MATH 292",
-            "MATH 54": "MATH 194",
-            "PHYSICS 7A": "PHYS 130",
-            "PHYSICS 7B": "PHYS 230",
-            "ENGLISH R1A": "ENGL 122",
-            "ENGLISH R1B": "ENGL 123",
-            "ASTRON 7A": "No Course Articulated",
-            "ASTRON 7B": "No Course Articulated",
-            "BIOLOGY 1A": "BIOSC 130",
-            "BIOLOGY 1B": "BIOSC 131",
-            "CHEM 1A": "CHEM 120",
-            "CHEM 1B": "CHEM 121",
-            "CHEM 3A": "CHEM 226",
-            "CHEM 3B": "CHEM 227",
-            "MCELLBI 32": "BIOSC 120",
-            "PHYSICS 7C": "PHYS 231",
-            "COMPSCI 61A": "No Course Articulated",
-            "COMPSCI 61B": "COMSC 210",
-            "COMPSCI 61C": "COMSC 260",
-            "COMPSCI 70": "This course must be taken at the university after transfer",
-            "EECS 16A": "No Course Articulated",
-            "EECS 16B": "No Course Articulated"
-        }
-    ],
-    "('To: University of California, Berkeley', 'From: Sacramento City College')": [
-        "Electrical Engineering & Computer Sciences, Lower Division B.S.",
-        {
-            "MATH 1A": "MATH 400",
-            "MATH 1B": "MATH 401",
-            "MATH 53": "MATH 402",
-            "MATH 54": "MATH 420",
-            "PHYSICS 7A": "PHYS 410",
-            "PHYSICS 7B": "PHYS 420",
-            "ENGLISH R1A": "ENGWR 300",
-            "ENGLISH R1B": "ENGWR 301",
-            "ASTRON 7A": "No Course Articulated",
-            "ASTRON 7B": "No Course Articulated",
-            "BIOLOGY 1A": "BIOL 402",
-            "BIOLOGY 1B": "BIOL 412",
-            "CHEM 1A": "CHEM 400",
-            "CHEM 1B": "CHEM 401",
-            "CHEM 3A": "CHEM 420",
-            "CHEM 3B": "CHEM 421",
-            "MCELLBI 32": "BIOL 430",
-            "PHYSICS 7C": "PHYS 430",
-            "COMPSCI 61A": "No Course Articulated",
-            "COMPSCI 61B": "CISP 430",
-            "COMPSCI 61C": "No Course Articulated",
-            "COMPSCI 70": "This course must be taken at the university after transfer",
-            "EECS 16A": "No Course Articulated",
-            "EECS 16B": "No Course Articulated"
-        }
-    ]
-}
-```
-
-# Installation
-
-Create and activate python venv [Link to setting up a virtual environment](https://python.land/virtual-environments/virtualenv)
-
-
-First type in terminal
-
+# TODO
+Create a well-designed database that would help in querying and reducting redundancy.
+# Objective
+Create a four-layered dictionary that would storage the whole data in this manner
 ```bash
-python -m venv venv
+{Layer 1 : [Layer 2 : [Layer 3 : [Layer 4]]]} // [] Indicates arrays, meaning more than 1 data value possible.
 ```
-
-Then
+# Layer 1 
+The four-year institutions you want to get transferred into // 9 UCs and 23 CSUs
 ```bash
-# For MAC OS
-source venv/bin/activate
-
-# For Windows
-venv/Scripts/activate
+{"UC Berkeley" : [Layer 2 : [Layer 3 : [Layer 4]]]}
 ```
-
-Then install the requirements:
+# Layer 2
+The Lower Division Courses offered at UCs/CSUs // NOT MAJORS
 ```bash
-pip install -r requirements.txt
+{"UC Berkeley" : ["EECS" : [Layer 3 : [Layer 4]]]} // INCORRECT
+{"UC Berkeley" : ["MATH 1A" : [Layer 3 : [Layer 4]]]} // CORRECT
 ```
-
-You can then run the main.py script by 
+# Layer 3
+The College that have articulation with Institution on Layer 1 (Generally Community Colleges)
 ```bash
-python main.py
+{"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : [Layer 4]} // OR
+{"UC Berkeley" : ["MATH 1A" : ["De Anza College" : [Layer 4]}
+NOTE: If there exists no combination between two distnict colleges in Layer 1 and Layer 3, that does NOT NECCESSARILY mean that no articulation agreement exists.
+Need to Think more about that.
 ```
-
-# To run website
-
-## Install independencies
-
+# Layer 4
+The Course offered at Community College (Layer 3) that articulates to the course listed at Layer 2. IF NO Course articulated then Layer 4 => null
 ```bash
-cd client
-npm install
+{"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : ["MATH 400"]} // OR
+{"UC Berkeley" : ["ENGLISH R1A" : ["De Anza College" : ["EWRT 1A","EWRT 1AH","ESL 5"]]]}
 ```
-
-## Run server
-
+## Note 
+1. The list on Layer 4 indicates ALL the different course articulated.<br>
+2. In case of articulation in a series, we can get around it using a potential fifth layer.
+## For Example:
+ [Agreement](https://assist.org/transfer/results?year=74&institution=89&agreement=126&agreementType=from&view=agreement&viewBy=major&viewSendingAgreements=false&viewByKey=74%2F126%2Fto%2F89%2FMajor%2F9034e3b6-1889-4b83-aa31-42ed05015380) between UCD and SCC on Physics.
+As the compeletion of 3 courses at SCC articulates to PHY 009A at UC Davis. We can create an additional layer 5:
 ```bash
-npm run dev
+{"UC Davis" : ["PHY 009A" : ["Sacramento City College" : [["PHY 410","PHY 420","PY 430"]]}
 ```
-
+# Difference between fourth and potential fifth layer
+All the courses in the fourth layer can be taken to complete the requirement, meaning
+```bash
+["CISP 400", "CISP 401"] means CISP 400 OR CISP 401
+```
+All the courses in the fifth layer needs to be done to complete the requirement, meaning
+```bash
+[["PHY 410","PHY 420","PY 430"]] meaning PHY 410 AND PHY 420 AND PHY 430
+```
+If incase there are 2 course combinations like MATH 1A AND 1B OR MATH 1C
+THEN WE CAN USE LAYER 4 AND 5 AT THE SAME TIME
+```bash
+[["MATH 1A","MATH 1B"], "MATH 1C"]
+```
+# FOR EXAMPLE
+The following is an example of all the things explained
+```bash
+{"UC Berkeley" : ["MATH 1A" : ["Sacramento City College" : "MATH 400", "De Anza College" : "MATH 1AH", "Some other College" : null], "MATH 1B" : ["Sacramento City College" : "MATH 401"]]
+, "UC Davis" : ["PHY 009A":["Sacramento City College" : ["PHY 410","PHY 420","PY 430"]]]}
+```
+# Other Things to Consider
+1. Some Colleges have more flexible course combinations.<br>
+2. Figuring out logic for looping out the courses without redundency.
