@@ -1,3 +1,5 @@
 selenium
-beautifulsoup4
 json
+json-spec
+pyttsx3
+py3-tts

@@ -9,6 +9,8 @@ import os
 import json
 import time
 
+# Text to speech, just for demo purposes
+from tts import speak
 """
 TODO: Search "All Majors" instead of EECS for now
     : Add "And" / "Or" to with both sides of articulations
@@ -21,21 +23,21 @@ class WebBot():
     
     def __init__(self):
         
-        print("Initializing WebBot...")
+        speak("Initializing WebBot...")
         
         options = Options()
         options.add_experimental_option("detach", True) # So browser don't close prematurely
         options.add_argument("--window-size=1440,960")  # Adjust the width and height as needed
         self.driver = webdriver.Chrome(options=options)
         self.url = "https://assist.org"
-        print("Initialized finished...")
+        speak("Initialized finished...")
             
     def open_articulation_agreements(self, institution_num, agreement_num):
         
         driver = self.driver
         actions = ActionChains(driver)
         driver.get(self.url)
-        print("Reading data...")
+        speak("Reading data...")
         
         try:
             
@@ -74,7 +76,7 @@ class WebBot():
             driver.find_element(By.XPATH, "/html/body/app-root/div[2]/app-home-component/section[@class='content']/app-form-container/div[@class='formArea']/div[@id='agreementInformationForm']/app-transfer-agreements-form/div[@class='panel agreements']/div[@class='panel-content']/form[@id='transfer-agreement-search']/div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']").click()
             
         except Exception as e:
-            print(f"Error on page 1: {e}")
+            speak(f"Error on page 1: {e}")
             self.driver.quit()
             return
         
@@ -95,7 +97,7 @@ class WebBot():
             )
             actions.move_to_element(chooseMajor).click().perform()
         except Exception as e:
-            print(e)
+            speak(e)
             driver.quit()
             return
         
@@ -136,7 +138,7 @@ class WebBot():
             return data
         
         except Exception as e:
-            print(e)
+            speak(e)
             return 0
          
     def quit(self):
@@ -154,7 +156,7 @@ def write_data_to_file(file_path, data):
     except:
         with open(file_path, "w") as file:
             json.dump(data, file, indent=4)
-            print("Added new data to file")
+            speak("Added new data to file")
             
             return 0
         
@@ -164,7 +166,7 @@ def write_data_to_file(file_path, data):
     
     with open(file_path, "w") as file:
         json.dump(existing_data, file, indent=4)
-        print("Added new data to file")
+        speak("Added new data to file")
         
         
 if __name__ == "__main__":
@@ -181,4 +183,5 @@ if __name__ == "__main__":
     write_data_to_file(file_name, data)
     time.sleep(4)
     bot.quit()
+    speak("Exited chrome driver")
     
