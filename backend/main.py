@@ -79,6 +79,20 @@ class WebBot():
             return
         
     # EECS: //div[@class='viewByRow'][32]
+    def getMajors(self):
+        driver = self.driver
+        actions = ActionChains(driver)
+        try:
+            majors = []
+            for i in range(2,96):
+                major = driver.find_elements(By.XPATH, f"//div[@class='viewByRow'][{i}]/a/div[@class='viewByRowColText']")
+                majors.append(major)
+            return majors
+        except Exception as e:
+            print(e)
+            return
+
+
     def scrape_articulations(self, major):
         """ 
         Args:
@@ -161,7 +175,7 @@ def write_data_to_file(file_path, data):
     # Merge data from new to old
     existing_data = {}
     existing_data.update(data)
-    
+
     with open(file_path, "w") as file:
         json.dump(existing_data, file, indent=4)
         print("Added new data to file")
@@ -177,6 +191,11 @@ if __name__ == "__main__":
     bot = WebBot()
     file_name = "data_files/EECS_BERKELEY.json"
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106
+    majors = []
+    majors = bot.getMajors()
+    print(majors)
+    print(type(majors))
+    print(len(majors))
     data = bot.scrape_articulations(32)
     write_data_to_file(file_name, data)
     time.sleep(4)
