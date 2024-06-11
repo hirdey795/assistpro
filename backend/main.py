@@ -72,13 +72,14 @@ class WebBot():
             
             # Click on agreement HACK
             driver.find_element(By.XPATH, "/html/body/app-root/div[2]/app-home-component/section[@class='content']/app-form-container/div[@class='formArea']/div[@id='agreementInformationForm']/app-transfer-agreements-form/div[@class='panel agreements']/div[@class='panel-content']/form[@id='transfer-agreement-search']/div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']").click()
-            
+
         except Exception as e:
             print(f"Error on page 1: {e}")
             self.driver.quit()
             return
         
     # EECS: //div[@class='viewByRow'][32]
+    # Gets Majors once at agreement page
     def getMajors(self):
         driver = self.driver
         actions = ActionChains(driver)
@@ -91,8 +92,17 @@ class WebBot():
         except Exception as e:
             print(e)
             return
-
-
+    
+    def getUni(self):
+        driver = self.driver
+        actions = ActionChains(driver)
+        uni = driver.find_element(By.XPATH, "//div[@class='criteria'][1]/span").text
+        return uni
+        
+    def exportMajors(self, uniName,  majors):
+        data = {f"{uniName}" : majors}
+        return data
+    
     def scrape_articulations(self, major):
         """ 
         Args:
@@ -155,6 +165,20 @@ class WebBot():
          
     def quit(self):
         self.driver.quit()
+    
+    # Clicks on "Modify Search Button"
+    def returnToHome(self):
+        driver = self.driver
+        actions = ActionChains(driver)
+        try:
+            returnToHome = WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable((By.XPATH, "/html/body/app-root/div[2]/app-transfer/section[@class='left-panel']/div[@class='logo-lockup']/a[@class='btn btn-primary']"))
+                    )
+            actions.move_to_element(returnToHome).click().perform()
+        except Exception as e:
+            print(e)
+            driver.quit()
+            return
         
         
         
@@ -189,14 +213,25 @@ if __name__ == "__main__":
     Major = 32 (EECS)
     """
     bot = WebBot()
-    file_name = "data_files/EECS_BERKELEY.json"
-    bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106
+    file_name = "data_files/MAJORS.json"
     majors = []
-    majors = bot.getMajors()
-    print(majors)
-    print(type(majors))
-    print(len(majors))
-    data = bot.scrape_articulations(32)
+    data = {}
+    for i in range(10, 29):
+        bot.open_articulation_agreements(i, 0)
+        majors = bot.getMajors()
+        Uni = bot.getUni()
+        data.update(bot.exportMajors(Uni, majors))
+        bot.returnToHome()
+    for i in range(136, 145):
+        bot.open_articulation_agreements(i, 0)
+        majors = bot.getMajors()
+        Uni = bot.getUni()
+        data.update(bot.exportMajors(Uni, majors))
+        bot.returnToHome()
+
+    #bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
+    print(data)
+    #data = bot.scrape_articulations(32)
     write_data_to_file(file_name, data)
     time.sleep(4)
     bot.quit()
