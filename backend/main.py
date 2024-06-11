@@ -83,10 +83,10 @@ class WebBot():
         driver = self.driver
         actions = ActionChains(driver)
         try:
-            majors = []
-            for i in range(2,96):
-                major = driver.find_elements(By.XPATH, f"//div[@class='viewByRow'][{i}]/a/div[@class='viewByRowColText']")
-                majors.append(major)
+            time.sleep(1)
+            majorsElements = driver.find_elements(By.XPATH, "//div[@class='viewByRow']/a/div[@class='viewByRowColText']")
+            majors = [element.text.split("\n")[0] for element in majorsElements]
+            majors.pop(0)
             return majors
         except Exception as e:
             print(e)
