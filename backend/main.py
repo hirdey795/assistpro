@@ -103,7 +103,7 @@ class WebBot():
         data = {f"{uniName}" : majors}
         return data
     
-    def scrape_articulations(self, major):
+    def scrape_articulations(self, i):
         """ 
         Args:
         major: Int
@@ -115,7 +115,7 @@ class WebBot():
         actions = ActionChains(driver)
         try:
             chooseMajor = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, f"//div[@class='viewByRow'][{major}]"))
+                EC.element_to_be_clickable((By.XPATH, f"//div[@class='viewByRow'][{i}]/a/div[@class='viewByRowColText']"))
             )
             actions.move_to_element(chooseMajor).click().perform()
         except Exception as e:
@@ -135,34 +135,43 @@ class WebBot():
         """
         time.sleep(1)
         try:
-            uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
-            collegeName = driver.find_element(By.XPATH, "//div[@class='instSending']/p[@class='inst']").text
-            majorName = driver.find_element(By.XPATH, "//div[@class='resultsBoxHeader']/h1").text
+            #uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
+            #collegeName = driver.find_element(By.XPATH, "//div[@class='instSending']/p[@class='inst']").text
+            #majorName = driver.find_element(By.XPATH, "//div[@class='resultsBoxHeader']/h1").text
             
             uniCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowReceiving']")
-            collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowSending']")
+            #collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowContent']/div[@class='articRow isSingle']/div[@class='rowSending node-item node-item--Sending']")
             
-            uniCourses = [element.text.split("\n")[0] for element in uniCoursesElements]
-            collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
+            uniCourses = [element.text.split("\n") for element in uniCoursesElements]
+            #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
                     
             print("----Uni Courses----")
             print(uniCourses)
             print("----")
+            return uniCourses
+            #print("----College Courses---")
+            #print(collegeCourses)
+            #print("----")
             
-            print("----College Courses---")
-            print(collegeCourses)
-            print("----")
+            #articulation_dict = {uniCourses:collegeCourses for uniCourses, collegeCourses in zip(uniCourses, collegeCourses)}
             
-            articulation_dict = {uniCourses:collegeCourses for uniCourses, collegeCourses in zip(uniCourses, collegeCourses)}
+            #data = {f"{uniName, collegeName}" : (majorName, articulation_dict)}
             
-            data = {f"{uniName, collegeName}" : (majorName, articulation_dict)}
-            
-            return data
+            #return data
         
         except Exception as e:
             print(e)
             return 0
-         
+
+    def formatUniCourses(self, uniCourses):
+        for i in range(0,len(uniCourses)):
+            if "AND" in uniCourses[i]:
+                uniCourses[i] = [f"{uniCourses[i][0]}", f"{uniCourses[i][(uniCourses[i].index("AND")+1)]}"]
+            else:
+                uniCourses[i] = uniCourses[i][0]
+        return uniCourses
+
+
     def quit(self):
         self.driver.quit()
     
@@ -214,25 +223,27 @@ if __name__ == "__main__":
     """
     bot = WebBot()
     file_name = "data_files/MAJORS.json"
-    majors = []
+    uniCourses = []
     data = {}
-    for i in range(10, 29):
-        bot.open_articulation_agreements(i, 0)
-        majors = bot.getMajors()
-        Uni = bot.getUni()
-        data.update(bot.exportMajors(Uni, majors))
-        bot.returnToHome()
-    for i in range(136, 145):
-        bot.open_articulation_agreements(i, 0)
-        majors = bot.getMajors()
-        Uni = bot.getUni()
-        data.update(bot.exportMajors(Uni, majors))
-        bot.returnToHome()
+    #for i in range(10, 29):
+        #bot.open_articulation_agreements(i, 0)
+        #majors = bot.getMajors()
+        #Uni = bot.getUni()
+        #data.update(bot.exportMajors(Uni, majors))
+        #bot.returnToHome()
+    #for i in range(136, 145):
+        #bot.open_articulation_agreements(i, 0)
+        #majors = bot.getMajors()
+        #Uni = bot.getUni()
+        #data.update(bot.exportMajors(Uni, majors))
+        #bot.returnToHome()
 
-    #bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
-    print(data)
-    #data = bot.scrape_articulations(32)
-    write_data_to_file(file_name, data)
+    bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
+    #print(data)
+    data = bot.scrape_articulations(32)
+    uniCourses = bot.formatUniCourses(data)
+    print(uniCourses)
+    #write_data_to_file(file_name, data)
     time.sleep(4)
     bot.quit()
     
