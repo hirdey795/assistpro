@@ -64,14 +64,16 @@ class WebBot():
             actions.move_to_element(dropDownAgreement).click().perform()
             
             # select College
-            agreement = WebDriverWait(driver, 10).until(
+            agreement = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, f"//div[contains(@id, '-{agreement_num}')]"))
             )
             actions.move_to_element(agreement).click().perform()
             # agreement.click()
             
             # Click on agreement HACK
-            driver.find_element(By.XPATH, "/html/body/app-root/div[2]/app-home-component/section[@class='content']/app-form-container/div[@class='formArea']/div[@id='agreementInformationForm']/app-transfer-agreements-form/div[@class='panel agreements']/div[@class='panel-content']/form[@id='transfer-agreement-search']/div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']").click()
+            click = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//form[@id='transfer-agreement-search']//div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']")))
+            actions.move_to_element(click).click().perform()
 
         except Exception as e:
             print(f"Error on page 1: {e}")
@@ -121,18 +123,20 @@ class WebBot():
             driver.quit()
             return
         
-        time.sleep(1)
         try:
             #uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
             #collegeName = driver.find_element(By.XPATH, "//div[@class='instSending']/p[@class='inst']").text
             #majorName = driver.find_element(By.XPATH, "//div[@class='resultsBoxHeader']/h1").text
-            
+            waitToLoad = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@class='resultsBoxHeader']/h1"))
+            )
+
             uniCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowReceiving']")
             #collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowContent']/div[@class='articRow isSingle']/div[@class='rowSending node-item node-item--Sending']")
             
             uniCourses = [element.text.split("\n") for element in uniCoursesElements]
             #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
-                    
+            time.sleep(1)
             print("----Uni Courses----")
             print(uniCourses)
             print("----")
@@ -204,14 +208,14 @@ def write_data_to_file(file_path, data):
         json.dump(existing_data, file, indent=4)
         print("Added new data to file")
         
-"""
-def addNewCourses(courses, data):
-    courses = bot.formatUniCourses(courses)
-    for i in range(0,len(courses)+1):
-        if courses[i] not in data[Uni]:
-            data[Uni].append(courses[i])
+
+def addNewCourses(courses, data, uni):
+    #courses = bot.formatUniCourses(courses)
+    for i in range(len(courses)):
+        if courses[i] not in data[uni]:
+            data[uni].append(courses[i])
     return data
-"""
+
 if __name__ == "__main__":
     """ 
     Testing:
@@ -224,7 +228,7 @@ if __name__ == "__main__":
     uniCourses = []
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
     #majors = bot.getMajors()
-    time.sleep(2)
+    time.sleep(3)
     uni = bot.getUni()
     uniCourses = bot.scrape_articulations(32)
     courseDict = bot.formatUniCourses(uniCourses)
@@ -236,7 +240,12 @@ if __name__ == "__main__":
     #write_data_to_file(file_name, data)
         
     #data.update(bot.exportMajors(Uni, majors))
-    bot.returnToHome()
+    #bot.returnToHome()
+    print(data)
+    uniCourses = bot.scrape_articulations(2)
+    courses = bot.formatUniCourses(uniCourses)
+    print(courses)
+    data = addNewCourses(uniCourses, data, uni)
     print(data)
     #write_data_to_file(file_name, data)
     time.sleep(2)
