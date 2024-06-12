@@ -150,7 +150,10 @@ class WebBot():
         except Exception as e:
             print(e)
             return 0
-
+    
+    def to_tuple(self, courses):
+        newTuple = [tuple(l) if isinstance(l, list) else l for l in courses]
+        return newTuple
     
     def formatUniCourses(self, uniCourses):
         for i in range(0,len(uniCourses)):
@@ -158,8 +161,9 @@ class WebBot():
                 uniCourses[i] = [f"{uniCourses[i][0]}", f"{uniCourses[i][(uniCourses[i].index("AND")+1)]}"]
             else:
                 uniCourses[i] = uniCourses[i][0]
-        return uniCourses
-    
+        #my_dict = {elements : None for elements in uniCourses}
+        return bot.to_tuple(uniCourses)
+
     def quit(self):
         self.driver.quit()
     
@@ -200,12 +204,14 @@ def write_data_to_file(file_path, data):
         json.dump(existing_data, file, indent=4)
         print("Added new data to file")
         
+"""
 def addNewCourses(courses, data):
     courses = bot.formatUniCourses(courses)
     for i in range(0,len(courses)+1):
         if courses[i] not in data[Uni]:
             data[Uni].append(courses[i])
     return data
+"""
 if __name__ == "__main__":
     """ 
     Testing:
@@ -218,11 +224,11 @@ if __name__ == "__main__":
     uniCourses = []
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
     #majors = bot.getMajors()
-    time.sleep(1)
+    time.sleep(2)
     uni = bot.getUni()
     uniCourses = bot.scrape_articulations(32)
-    uniCourses = bot.formatUniCourses(uniCourses)
-    data = {f"{uni}" : uniCourses}
+    courseDict = bot.formatUniCourses(uniCourses)
+    data = {f"{uni}" : courseDict}
     
     #for i in range(2,4):
     #addNewCourses(data, courses)
@@ -230,10 +236,9 @@ if __name__ == "__main__":
     #write_data_to_file(file_name, data)
         
     #data.update(bot.exportMajors(Uni, majors))
-    print(data)
     bot.returnToHome()
-    #print(uniCourses)
+    print(data)
     #write_data_to_file(file_name, data)
-    time.sleep(4)
+    time.sleep(2)
     bot.quit()
     
