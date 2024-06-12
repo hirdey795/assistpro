@@ -78,8 +78,6 @@ class WebBot():
             self.driver.quit()
             return
         
-    # EECS: //div[@class='viewByRow'][32]
-    # Gets Majors once at agreement page
     def getMajors(self):
         driver = self.driver
         actions = ActionChains(driver)
@@ -123,16 +121,6 @@ class WebBot():
             driver.quit()
             return
         
-        """
-        Key: MATH1A, Value: MATH400 ("Sacramento City College"), MATH400 ("American River College")
-        e.g.
-        
-        Agreement = UNI + "<->" + COLLEGE
-        
-        { 
-            "Berkeley, Sacramento City College" : { "MATH1A" : "MATH400" }
-        }
-        """
         time.sleep(1)
         try:
             #uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
@@ -163,6 +151,7 @@ class WebBot():
             print(e)
             return 0
 
+    
     def formatUniCourses(self, uniCourses):
         for i in range(0,len(uniCourses)):
             if "AND" in uniCourses[i]:
@@ -170,12 +159,10 @@ class WebBot():
             else:
                 uniCourses[i] = uniCourses[i][0]
         return uniCourses
-
-
+    
     def quit(self):
         self.driver.quit()
     
-    # Clicks on "Modify Search Button"
     def returnToHome(self):
         driver = self.driver
         actions = ActionChains(driver)
@@ -213,7 +200,12 @@ def write_data_to_file(file_path, data):
         json.dump(existing_data, file, indent=4)
         print("Added new data to file")
         
-        
+def addNewCourses(courses, data):
+    courses = bot.formatUniCourses(courses)
+    for i in range(0,len(courses)+1):
+        if courses[i] not in data[Uni]:
+            data[Uni].append(courses[i])
+    return data
 if __name__ == "__main__":
     """ 
     Testing:
@@ -222,27 +214,25 @@ if __name__ == "__main__":
     Major = 32 (EECS)
     """
     bot = WebBot()
-    file_name = "data_files/MAJORS.json"
+    file_name = "data_files/uniCourses.json"
     uniCourses = []
-    data = {}
-    #for i in range(10, 29):
-        #bot.open_articulation_agreements(i, 0)
-        #majors = bot.getMajors()
-        #Uni = bot.getUni()
-        #data.update(bot.exportMajors(Uni, majors))
-        #bot.returnToHome()
-    #for i in range(136, 145):
-        #bot.open_articulation_agreements(i, 0)
-        #majors = bot.getMajors()
-        #Uni = bot.getUni()
-        #data.update(bot.exportMajors(Uni, majors))
-        #bot.returnToHome()
-
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
-    #print(data)
-    data = bot.scrape_articulations(32)
-    uniCourses = bot.formatUniCourses(data)
-    print(uniCourses)
+    #majors = bot.getMajors()
+    time.sleep(1)
+    uni = bot.getUni()
+    uniCourses = bot.scrape_articulations(32)
+    uniCourses = bot.formatUniCourses(uniCourses)
+    data = {f"{uni}" : uniCourses}
+    
+    #for i in range(2,4):
+    #addNewCourses(data, courses)
+    
+    #write_data_to_file(file_name, data)
+        
+    #data.update(bot.exportMajors(Uni, majors))
+    print(data)
+    bot.returnToHome()
+    #print(uniCourses)
     #write_data_to_file(file_name, data)
     time.sleep(4)
     bot.quit()
