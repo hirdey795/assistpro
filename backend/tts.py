@@ -13,7 +13,7 @@ import pyttsx3
 #         print("🤖: ",text)
 #         engine.runAndWait()
 
-engine = pyttsx3.init('nsss')  # If windows, change param values
+engine = pyttsx3.init()  # If windows, change param values
 
 def speak(text):
         engine.say(text)

@@ -1,5 +1,4 @@
 selenium
-json
 json-spec
 pyttsx3
 py3-tts
