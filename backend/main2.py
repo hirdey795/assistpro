@@ -23,6 +23,10 @@ class WebBot():
         options = Options()
         options.add_experimental_option("detach", True)  # So browser doesn't close prematurely
         options.add_argument("--window-size=1440,960")  # Adjust the width and height as needed
+        options.add_argument("--headless")  # Uncomment for headless mode
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(options=options)
         self.url = "https://assist.org"
         speak("Initialization finished...")
@@ -63,8 +67,7 @@ class WebBot():
             
         except Exception as e:
             speak(f"Error on page 1: {e}")
-            self.driver.quit()
-            return
+            self.restart_browser()
     
     def scrape_articulations(self, major) -> dict:
         driver = self.driver
@@ -75,13 +78,16 @@ class WebBot():
             )
             actions.move_to_element(chooseMajor).click().perform()
         except Exception as e:
-            speak(e)
-            driver.quit()
+            print(e)
+            driver.quit() 
             return
 
-        time.sleep(1)
+        # time.sleep(1)
         try:
-            uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
+            uniName = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH,  "//div[@class='instReceiving']/p[@class='inst']"))
+            ).text
+            # uniName = driver.find_element(By.XPATH, "//div[@class='instReceiving']/p[@class='inst']").text
             uniName = uniName.replace("To: ", "")
             majorName = driver.find_element(By.XPATH, "//div[@class='resultsBoxHeader']/h1").text
 
@@ -107,14 +113,26 @@ class WebBot():
         actions = ActionChains(driver)
         try:
             returnToHome = WebDriverWait(driver, 10).until(
-                        EC.element_to_be_clickable((By.XPATH, "//a[@class='btn btn-primary']"))
+                        EC.element_to_be_clickable((By.XPATH, "/html/body/app-root/div[2]/app-transfer/section[@class='left-panel']/div[@class='logo-lockup']/a[@class='btn btn-primary']"))
                     )
             actions.move_to_element(returnToHome).click().perform()
+
+            click = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//form[@id='transfer-agreement-search']//div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']")))
+            actions.move_to_element(click).click().perform()
+
         except Exception as e:
             print(e)
-            driver.quit()
-            return
+            self.restart_browser()
     
+    def restart_browser(self):
+        print("Restarting the browser...")
+        try:
+            self.driver.quit()
+        except Exception as e:
+            print(f"Error quitting the browser: {e}")
+        self.__init__()
+        
     def quit(self):
         self.driver.quit()
 
@@ -139,7 +157,8 @@ def write_data_to_file(file_path, data):
 
     with open(file_path, "w") as file:
         json.dump(existing_data, file, indent=4)
-        speak("Added new data to file")
+        # speak("Added new data to file")
+        print("Added new data to file")
 
 if __name__ == "__main__":
     # bot = WebBot()
@@ -153,25 +172,36 @@ if __name__ == "__main__":
     # speak("Exited chrome driver")
     
     bot = WebBot()
-    file_name = "client/src/dataset/uni_and_classes_2.json"
-    for i in range(10, 26):
-        bot.open_articulation_agreements(i, 106)
+    file_name = "client/src/dataset/uni_and_classes_3.json"
+    
+    for i in range(11, 26):
+        bot.open_articulation_agreements(i, 76)
         j = 2
-        while j:
+        while True:
             try:
-                write_data_to_file(file_name, bot.scrape_articulations(j))
-            except:
+                data = bot.scrape_articulations(j)
+                if data:
+                    write_data_to_file(file_name, bot.scrape_articulations(j))
+                else:
+                    break
+            except Exception as e:
+                print(e)
                 break
             j += 1
         bot.return_to_home()
     
     for i in range(136, 144):
-        bot.open_articulation_agreements(i, 106)
+        bot.open_articulation_agreements(i, 76)
         j = 2
-        while j:
+        while True:
             try:
-                write_data_to_file(file_name, bot.scrape_articulations(j))
-            except:
+                data = bot.scrape_articulations(j)
+                if data:
+                    write_data_to_file(file_name, bot.scrape_articulations(j))
+                else:
+                    break
+            except Exception as e:
+                print(e)
                 break
             j += 1
         bot.return_to_home()
