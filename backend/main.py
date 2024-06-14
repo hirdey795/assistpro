@@ -136,12 +136,12 @@ class WebBot():
             uniCourses = [element.text.split("\n") for element in uniCoursesElements]
             uniCourses = bot.formatUniCourses(uniCourses)
             for i in uniCourses[:]:
-                if (("satisfy" in i) or (" " not in i) or ("section" in i)):
+                if (("satisfy" in i) or (" " not in i) or ("section" in i) or (len(i) > 10) or ("greememt" in i)):
                     uniCourses.remove(i)
             print(uniCourses)
             #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
             time.sleep(0.5)
-            bot.returnToHome()
+            bot.returnToHomeAndBack()
             #print("----Uni Courses----")
             #print(bot.formatUniCourses(uniCourses))
             #print("----")
@@ -178,7 +178,7 @@ class WebBot():
     def quit(self):
         self.driver.quit()
     
-    def returnToHome(self): #Return and Come back
+    def returnToHomeAndBack(self): #Return and Come back
         driver = self.driver
         actions = ActionChains(driver)
         try:
@@ -190,6 +190,19 @@ class WebBot():
             click = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.XPATH, "//form[@id='transfer-agreement-search']//div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']")))
             actions.move_to_element(click).click().perform()
+
+        except Exception as e:
+            print(e)
+            return
+        
+    def returnToHome(self): #Return
+        driver = self.driver
+        actions = ActionChains(driver)
+        try:
+            returnToHome = WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable((By.XPATH, "/html/body/app-root/div[2]/app-transfer/section[@class='left-panel']/div[@class='logo-lockup']/a[@class='btn btn-primary']"))
+                    )
+            actions.move_to_element(returnToHome).click().perform()
 
         except Exception as e:
             print(e)
@@ -244,30 +257,76 @@ if __name__ == "__main__":
     Major = 32 (EECS)
     """
     bot = WebBot()
-    file_name = "data_files/uniCourses.json"
+    file_name = "data_files/uniMajorsCoursesCopy.json"
+    try:
+        with open(file_name, "r") as file:
+            dict = json.load(file)
+    except Exception as e:
+        print(e)
+
+    uniList = list(dict.keys())
+    #for key in uniList:
+    #dict[key] = {key : None for key in dict[key]}
+
+    #write_data_to_file(file_name, dict)
     
-    
-    
-    bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
-    courseDict = []
-    time.sleep(3)
-    uni = bot.getUni()
-    majors = bot.getMajors()
-    allCourses = []
-    data = {f"{uni}" : courseDict}
-    print("-----University-----")
-    print(uni)
-    print("--------------------")
+
+    #data = {f"{uni}" : courseDict}
     #for i in range(len(majors)):
     #print(i)
-    for i in range(len(majors)):
-        print(i)
-        print(majors[i])
-        allCourses.append(bot.scrape_articulations(i)) 
-        courseDict = addNewCourses(data, allCourses, uni)
-        write_data_to_file(file_name, data)
+    #for i in range(len(majors)):
+    #    print(i)
+    #    print(majors[i]) 
+    #    courseDict = addNewCourses(data, allCourses, uni)
+    #    write_data_to_file(file_name, data)
     #for i in range(2,4):
-        
+    
+    
+    #courseDict = []
+    
+
+    for i in range(28,29):
+        try:
+            bot.open_articulation_agreements(i, 0)
+            time.sleep(3)
+            uni = bot.getUni()
+            print("-----University-----")
+            print(uni)
+            print("--------------------")
+            majors = bot.getMajors()
+            allCourses = []
+            for j in range(len(majors)):
+                    try:
+                        allCourses.append(bot.scrape_articulations(j))
+                        dict[uni][majors[j]] = allCourses[j] 
+                    except:
+                            print(Exception)  
+            bot.returnToHome()
+        except:
+            print(Exception)
+
+    for i in range(136,145):
+        try:
+            bot.open_articulation_agreements(i, 0)
+            time.sleep(3)
+            uni = bot.getUni()
+            print("-----University-----")
+            print(uni)
+            print("--------------------")
+            majors = bot.getMajors()
+            allCourses = []
+            for j in range(len(majors)):
+                    try:
+                        allCourses.append(bot.scrape_articulations(j))
+                        dict[uni][majors[j]] = allCourses[j] 
+                    except:
+                        print(Exception)
+        except:
+            print(Exception)
+            continue  
+        bot.returnToHome()
+    write_data_to_file(file_name,dict)
+    #print(dict)
     #data.update(bot.exportMajors(Uni, majors))
     #bot.returnToHome()
     #print(data)
