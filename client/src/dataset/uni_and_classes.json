@@ -1,0 +1,23 @@
+{
+    "UC Berkeley": {
+      "Aerospace Engineering": ["MATH 1A", "PHYSICS 7A", "ENGIN 7"],
+      "Electrical Engineering": ["MATH 1B", "PHYSICS 7B", "EECS 16A"],
+      "Computer Science": ["COMPSCI 61A", "COMPSCI 61B", "COMPSCI 70"]
+    },
+    "Stanford University": {
+      "Biology": ["BIO 101", "BIO 102", "CHEM 121"],
+      "Mechanical Engineering": ["ME 101", "ME 102", "PHYSICS 45"],
+      "Psychology": ["PSYCH 1", "PSYCH 2", "STAT 101"]
+    },
+    "Harvard University": {
+      "Economics": ["ECON 101", "ECON 102", "STAT 104"],
+      "Political Science": ["POL 101", "POL 102", "HIST 105"],
+      "Law": ["LAW 101", "LAW 102", "HIST 204"]
+    },
+    "Massachusetts Institute of Technology": {
+      "Physics": ["PHYS 101", "PHYS 102", "MATH 111"],
+      "Chemistry": ["CHEM 101", "CHEM 102", "BIO 103"],
+      "Mathematics": ["MATH 101", "MATH 102", "MATH 201"]
+    }
+  }
+  

@@ -1,30 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './SearchComponent.css'; // Import the CSS file
-
-// Sample data for demonstration
-const data = {
-  'University 1': ['Class 1.1', 'Class 1.2', 'Class 1.3'],
-  'University 2': ['Class 2.1', 'Class 2.2', 'Class 2.3'],
-  'University 3': ['Class 3.1', 'Class 3.2', 'Class 3.3'],
-  'University 4': ['Class 4.1', 'Class 4.2', 'Class 4.3'],
-};
+import './SearchComponent.css';
+import data from '../dataset/uni_and_classes_2.json'; // Import the JSON data
 
 const SearchComponent = () => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedUni, setSelectedUni] = useState('');
+  const [selectedMajor, setSelectedMajor] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
   const [showUniDropdown, setShowUniDropdown] = useState(false);
+  const [showMajorDropdown, setShowMajorDropdown] = useState(false);
   const [showClassDropdown, setShowClassDropdown] = useState(false);
   const [filteredUnis, setFilteredUnis] = useState(Object.keys(data));
+  const [filteredMajors, setFilteredMajors] = useState([]);
   const [filteredClasses, setFilteredClasses] = useState([]);
 
   const uniDropdownRef = useRef();
+  const majorDropdownRef = useRef();
   const classDropdownRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (uniDropdownRef.current && !uniDropdownRef.current.contains(event.target)) {
         setShowUniDropdown(false);
+      }
+      if (majorDropdownRef.current && !majorDropdownRef.current.contains(event.target)) {
+        setShowMajorDropdown(false);
       }
       if (classDropdownRef.current && !classDropdownRef.current.contains(event.target)) {
         setShowClassDropdown(false);
@@ -38,7 +37,7 @@ const SearchComponent = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    const query = { searchTerm, selectedUni, selectedClass };
+    const query = { selectedUni, selectedMajor, selectedClass };
 
     try {
       const response = await fetch('http://your-django-server-endpoint', {
@@ -60,34 +59,67 @@ const SearchComponent = () => {
 
   const handleUniClick = () => {
     setShowUniDropdown(!showUniDropdown);
+    setShowMajorDropdown(false);
     setShowClassDropdown(false);
   };
 
+  const handleMajorClick = () => {
+    if (selectedUni) {
+      setShowMajorDropdown(!showMajorDropdown);
+      setShowUniDropdown(false);
+      setShowClassDropdown(false);
+    }
+  };
+
   const handleClassClick = () => {
-    setShowClassDropdown(!showClassDropdown);
-    setShowUniDropdown(false);
+    if (selectedMajor) {
+      setShowClassDropdown(!showClassDropdown);
+      setShowUniDropdown(false);
+      setShowMajorDropdown(false);
+    }
   };
 
   const handleUniChange = (e) => {
     const input = e.target.value;
     setSelectedUni(input);
     setFilteredUnis(Object.keys(data).filter(uni => uni.toLowerCase().includes(input.toLowerCase())));
-    setFilteredClasses([]);  // Clear classes if the university selection changes
-    setSelectedClass('');    // Clear selected class
+    setFilteredMajors([]);  // Clear majors if the university selection changes
+    setFilteredClasses([]); // Clear classes if the university selection changes
+    setSelectedMajor('');   // Clear selected major
+    setSelectedClass('');   // Clear selected class
+  };
+
+  const handleMajorChange = (e) => {
+    const input = e.target.value;
+    setSelectedMajor(input);
+    if (selectedUni) {
+      setFilteredMajors(Object.keys(data[selectedUni]).filter(major => major.toLowerCase().includes(input.toLowerCase())));
+      setFilteredClasses([]); // Clear classes if the major selection changes
+      setSelectedClass('');   // Clear selected class
+    }
   };
 
   const handleClassChange = (e) => {
     const input = e.target.value;
     setSelectedClass(input);
-    if (selectedUni) {
-      setFilteredClasses(data[selectedUni].filter(cls => cls.toLowerCase().includes(input.toLowerCase())));
+    if (selectedMajor) {
+      setFilteredClasses(data[selectedUni][selectedMajor].filter(cls => cls.toLowerCase().includes(input.toLowerCase())));
     }
   };
 
   const handleUniSelect = (uni) => {
     setSelectedUni(uni);
     setShowUniDropdown(false);
-    setFilteredClasses(data[uni]);
+    setFilteredMajors(Object.keys(data[uni]));
+    setSelectedMajor('');
+    setFilteredClasses([]);
+  };
+
+  const handleMajorSelect = (major) => {
+    setSelectedMajor(major);
+    setShowMajorDropdown(false);
+    setFilteredClasses(data[selectedUni][major]);
+    setSelectedClass('');
   };
 
   const handleClassSelect = (cls) => {
@@ -122,13 +154,40 @@ const SearchComponent = () => {
       </div>
       <div className="select-container">
         <div
-          onClick={selectedUni ? handleClassClick : null}
+          onClick={selectedUni ? handleMajorClick : null}
           className="selector"
           style={{ cursor: selectedUni ? 'pointer' : 'not-allowed', opacity: selectedUni ? 1 : 0.5 }}
         >
-          {selectedClass || (selectedUni ? 'Select Class...' : 'Select Uni first...')}
+          {selectedMajor || (selectedUni ? 'Select Major...' : 'Select Uni first...')}
         </div>
-        {selectedUni && showClassDropdown && (
+        {selectedUni && showMajorDropdown && (
+          <div ref={majorDropdownRef} className="dropdown">
+            <input
+              type="text"
+              placeholder="Search Major..."
+              value={selectedMajor}
+              onChange={handleMajorChange}
+              className="dropdown-input"
+            />
+            <ul className="list">
+              {filteredMajors.map((major) => (
+                <li key={major} onClick={() => handleMajorSelect(major)} className="list-item">
+                  {major}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="select-container">
+        <div
+          onClick={selectedMajor ? handleClassClick : null}
+          className="selector"
+          style={{ cursor: selectedMajor ? 'pointer' : 'not-allowed', opacity: selectedMajor ? 1 : 0.5 }}
+        >
+          {selectedClass || (selectedMajor ? 'Select Class...' : 'Select Major first...')}
+        </div>
+        {selectedMajor && showClassDropdown && (
           <div ref={classDropdownRef} className="dropdown">
             <input
               type="text"
