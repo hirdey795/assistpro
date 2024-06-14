@@ -135,10 +135,10 @@ class WebBot():
             
             uniCourses = [element.text.split("\n") for element in uniCoursesElements]
             uniCourses = bot.formatUniCourses(uniCourses)
-            print(uniCourses)
             for i in uniCourses[:]:
-                if ("satisfy" in i) or (" " not in i):
+                if (("satisfy" in i) or (" " not in i) or ("section" in i)):
                     uniCourses.remove(i)
+            print(uniCourses)
             #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
             time.sleep(0.5)
             bot.returnToHome()
@@ -169,11 +169,11 @@ class WebBot():
     def formatUniCourses(self, uniCourses):
         for i in range(0,len(uniCourses)):
             if "AND" in uniCourses[i]:
-                uniCourses[i] = [f"{uniCourses[i][0]}", f"{uniCourses[i][(uniCourses[i].index("AND")+1)]}"]
+                uniCourses[i] = f"{uniCourses[i][0]} AND {uniCourses[i][(uniCourses[i].index("AND")+1)]}"
             else:
                 uniCourses[i] = uniCourses[i][0]
         #my_dict = {elements : None for elements in uniCourses}
-        return bot.to_tuple(uniCourses)
+        return uniCourses
 
     def quit(self):
         self.driver.quit()
@@ -245,13 +245,14 @@ if __name__ == "__main__":
     """
     bot = WebBot()
     file_name = "data_files/uniCourses.json"
+    
+    
+    
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
-    #majors = bot.getMajors()
     courseDict = []
     time.sleep(3)
     uni = bot.getUni()
     majors = bot.getMajors()
-    print(len(majors))
     allCourses = []
     data = {f"{uni}" : courseDict}
     print("-----University-----")
@@ -259,13 +260,12 @@ if __name__ == "__main__":
     print("--------------------")
     #for i in range(len(majors)):
     #print(i)
-    allCourses.append(bot.scrape_articulations(88)) #EECS
-    #print(allCourses)
-    #time.sleep(1)
-    allCourses.append(bot.scrape_articulations(94))
-    print(allCourses)
-    courseDict = addNewCourses(data, allCourses, uni)
-    write_data_to_file(file_name, data)
+    for i in range(len(majors)):
+        print(i)
+        print(majors[i])
+        allCourses.append(bot.scrape_articulations(i)) 
+        courseDict = addNewCourses(data, allCourses, uni)
+        write_data_to_file(file_name, data)
     #for i in range(2,4):
         
     #data.update(bot.exportMajors(Uni, majors))
