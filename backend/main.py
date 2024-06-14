@@ -115,7 +115,7 @@ class WebBot():
         actions = ActionChains(driver)
         try:
             chooseMajor = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, f"//div[@class='viewByRow'][{i}]/a/div[@class='viewByRowColText']"))
+                EC.element_to_be_clickable((By.XPATH, f"//div[@class='viewByRow'][{i}+2]/a/div[@class='viewByRowColText']"))
             )
             actions.move_to_element(chooseMajor).click().perform()
         except Exception as e:
@@ -130,16 +130,21 @@ class WebBot():
             waitToLoad = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@class='resultsBoxHeader']/h1"))
             )
-
             uniCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowReceiving']")
             #collegeCoursesElements = driver.find_elements(By.XPATH, "//div[@class='rowContent']/div[@class='articRow isSingle']/div[@class='rowSending node-item node-item--Sending']")
             
             uniCourses = [element.text.split("\n") for element in uniCoursesElements]
-            #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
-            time.sleep(1)
-            print("----Uni Courses----")
+            uniCourses = bot.formatUniCourses(uniCourses)
             print(uniCourses)
-            print("----")
+            for i in uniCourses[:]:
+                if ("satisfy" in i) or (" " not in i):
+                    uniCourses.remove(i)
+            #collegeCourses = [element.text.split("\n")[0] for element in collegeCoursesElements]
+            time.sleep(0.5)
+            bot.returnToHome()
+            #print("----Uni Courses----")
+            #print(bot.formatUniCourses(uniCourses))
+            #print("----")
             return uniCourses
             #print("----College Courses---")
             #print(collegeCourses)
@@ -153,7 +158,9 @@ class WebBot():
         
         except Exception as e:
             print(e)
-            return 0
+            print("Returning empty list")
+            bot.returnToHome()
+            return []
     
     def to_tuple(self, courses):
         newTuple = [tuple(l) if isinstance(l, list) else l for l in courses]
@@ -171,7 +178,7 @@ class WebBot():
     def quit(self):
         self.driver.quit()
     
-    def returnToHome(self):
+    def returnToHome(self): #Return and Come back
         driver = self.driver
         actions = ActionChains(driver)
         try:
@@ -179,9 +186,13 @@ class WebBot():
                         EC.element_to_be_clickable((By.XPATH, "/html/body/app-root/div[2]/app-transfer/section[@class='left-panel']/div[@class='logo-lockup']/a[@class='btn btn-primary']"))
                     )
             actions.move_to_element(returnToHome).click().perform()
+
+            click = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//form[@id='transfer-agreement-search']//div[@class='d-flex justify-content-center']/button[@class='btn btn-primary']")))
+            actions.move_to_element(click).click().perform()
+
         except Exception as e:
             print(e)
-            driver.quit()
             return
         
         
@@ -209,12 +220,21 @@ def write_data_to_file(file_path, data):
         print("Added new data to file")
         
 
-def addNewCourses(courses, data, uni):
+def addNewCourses(data, allCourses, uni):
     #courses = bot.formatUniCourses(courses)
-    for i in range(len(courses)):
-        if courses[i] not in data[uni]:
-            data[uni].append(courses[i])
+    combined = []
+    for course in allCourses:
+        combined.extend(course)
+    data[uni] = list(set(combined))
+    #for i in range(len(allCourses)): 
+    #data[uni] =  list(set(allCourses[i] + data[uni])) for i in allCourses 
+        #data[uni].clear()
+        #data[uni].append(newCourses)
     return data
+    #for i in range(len(courses)):
+    #    if courses[i] not in data[uni]:
+    #        data[uni].append(courses[i])
+    #return data
 
 if __name__ == "__main__":
     """ 
@@ -225,29 +245,37 @@ if __name__ == "__main__":
     """
     bot = WebBot()
     file_name = "data_files/uniCourses.json"
-    uniCourses = []
     bot.open_articulation_agreements(136, 106) # institution = 136, agreement = 106 
     #majors = bot.getMajors()
+    courseDict = []
     time.sleep(3)
     uni = bot.getUni()
-    uniCourses = bot.scrape_articulations(32)
-    courseDict = bot.formatUniCourses(uniCourses)
+    majors = bot.getMajors()
+    print(len(majors))
+    allCourses = []
     data = {f"{uni}" : courseDict}
-    
+    print("-----University-----")
+    print(uni)
+    print("--------------------")
+    #for i in range(len(majors)):
+    #print(i)
+    allCourses.append(bot.scrape_articulations(88)) #EECS
+    #print(allCourses)
+    #time.sleep(1)
+    allCourses.append(bot.scrape_articulations(94))
+    print(allCourses)
+    courseDict = addNewCourses(data, allCourses, uni)
+    write_data_to_file(file_name, data)
     #for i in range(2,4):
-    #addNewCourses(data, courses)
-    
-    #write_data_to_file(file_name, data)
         
     #data.update(bot.exportMajors(Uni, majors))
     #bot.returnToHome()
-    print(data)
-    uniCourses = bot.scrape_articulations(2)
-    courses = bot.formatUniCourses(uniCourses)
-    print(courses)
-    data = addNewCourses(uniCourses, data, uni)
-    print(data)
+    #print(data)
+    #uniCourses = bot.scrape_articulations(2)
+    #print(uniCourses)
+    #data = addNewCourses(uniCourses, data, uni)
+    #print(data)
     #write_data_to_file(file_name, data)
-    time.sleep(2)
+    #time.sleep(2)
     bot.quit()
     
