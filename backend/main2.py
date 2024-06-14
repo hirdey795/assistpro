@@ -171,40 +171,43 @@ if __name__ == "__main__":
     # bot.quit()
     # speak("Exited chrome driver")
     
-    bot = WebBot()
-    file_name = "client/src/dataset/uni_and_classes_3.json"
+    """ 
+    NOTE: Attempt to get all majors and courses.
+    """
+    # bot = WebBot()
+    # file_name = "client/src/dataset/uni_and_classes_3.json"
     
-    for i in range(11, 26):
-        bot.open_articulation_agreements(i, 76)
-        j = 2
-        while True:
-            try:
-                data = bot.scrape_articulations(j)
-                if data:
-                    write_data_to_file(file_name, bot.scrape_articulations(j))
-                else:
-                    break
-            except Exception as e:
-                print(e)
-                break
-            j += 1
-        bot.return_to_home()
+    # for i in range(10, 26):
+    #     bot.open_articulation_agreements(i, 76)
+    #     j = 1
+    #     while True:
+    #         try:
+    #             data = bot.scrape_articulations(j)
+    #             if data:
+    #                 write_data_to_file(file_name, bot.scrape_articulations(j))
+    #             else:
+    #                 break
+    #         except Exception as e:
+    #             print(e)
+    #             break
+    #         j += 1
+    #     bot.return_to_home()
     
-    for i in range(136, 144):
-        bot.open_articulation_agreements(i, 76)
-        j = 2
-        while True:
-            try:
-                data = bot.scrape_articulations(j)
-                if data:
-                    write_data_to_file(file_name, bot.scrape_articulations(j))
-                else:
-                    break
-            except Exception as e:
-                print(e)
-                break
-            j += 1
-        bot.return_to_home()
+    # for i in range(136, 144):
+    #     bot.open_articulation_agreements(i, 76)
+    #     j = 1
+    #     while True:
+    #         try:
+    #             data = bot.scrape_articulations(j)
+    #             if data:
+    #                 write_data_to_file(file_name, bot.scrape_articulations(j))
+    #             else:
+    #                 break
+    #         except Exception as e:
+    #             print(e)
+    #             break
+    #         j += 1
+    #     bot.return_to_home()
         
-    bot.quit()
+    # bot.quit()
         

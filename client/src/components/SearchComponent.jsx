@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './SearchComponent.css';
-import data from '../dataset/uni_and_classes.json'; // Import the JSON data
+import data from '../dataset/uniMajorsCoursesCopy.json'; // Import the JSON data
 
 const SearchComponent = () => {
   const [selectedUni, setSelectedUni] = useState('');
