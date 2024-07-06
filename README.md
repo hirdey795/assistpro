@@ -1,12 +1,14 @@
-Work in progress add more later
+# [Assistpro](https://assistpro-test.vercel.app)
+## AssistPro is a comprehensive web tool designed to simplify the process of identifying class articulations across various colleges and universities. It is particularly useful for students planning to transfer and needing to find equivalent courses at their new institution.
+
+---
 
 # TODO:
-1. Start scraping all of the articulations for EECS SCC -> Berkeley, tables of course Titles
-2. Start to modulate methods in the class to scrape all of the UNI and Colleges articulations onto JSON
-3. UC to CC/ CSU to CC
-4. Format JSON and architecture
-5. Add features to website
-6. Make website mobile friendly
+- [ ] Update/Format Website with features, look into this ![layout](https://github.com/hirdey795/assistpro/blob/main/Extra_README/README_LAYOUT.md)
+- [x] Scrape all UNI/CSU Classes
+- [ ] Return all classes from colleges which are available for the selected class that the user picked. (Frontend/Backend Communication)
+- [x] Make scraping headless optional (not need window popup everytime we scrape)
+- [ ] FastAPI / Flask ?
 
 # [Website](https://assistpro-test.vercel.app)
 
@@ -80,6 +82,31 @@ Diablo Valley College has courses that articulates which SCC does not, therefore
         }
     ]
 }
+```
+Sample Data that is serving our front end inputs
+```json
+{
+    "UC Berkeley": {
+      "Aerospace Engineering": ["MATH 1A", "PHYSICS 7A", "ENGIN 7"],
+      "Electrical Engineering": ["MATH 1B", "PHYSICS 7B", "EECS 16A"],
+      "Computer Science": ["COMPSCI 61A", "COMPSCI 61B", "COMPSCI 70"]
+    },
+    "Stanford University": {
+      "Biology": ["BIO 101", "BIO 102", "CHEM 121"],
+      "Mechanical Engineering": ["ME 101", "ME 102", "PHYSICS 45"],
+      "Psychology": ["PSYCH 1", "PSYCH 2", "STAT 101"]
+    },
+    "Harvard University": {
+      "Economics": ["ECON 101", "ECON 102", "STAT 104"],
+      "Political Science": ["POL 101", "POL 102", "HIST 105"],
+      "Law": ["LAW 101", "LAW 102", "HIST 204"]
+    },
+    "Massachusetts Institute of Technology": {
+      "Physics": ["PHYS 101", "PHYS 102", "MATH 111"],
+      "Chemistry": ["CHEM 101", "CHEM 102", "BIO 103"],
+      "Mathematics": ["MATH 101", "MATH 102", "MATH 201"]
+    }
+  }
 ```
 
 # Installation

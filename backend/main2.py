@@ -161,6 +161,10 @@ def write_data_to_file(file_path, data):
         print("Added new data to file")
 
 if __name__ == "__main__":
+    
+    """ 
+    NOTE: The first commented block below is for testing, and not meant to be used for automated scraping
+    """
     # bot = WebBot()
     # file_name = "client/src/dataset/uni_and_classes_2.json"
     # bot.open_articulation_agreements(136, 106)  # Institution = 136, Agreement = 106
@@ -172,7 +176,8 @@ if __name__ == "__main__":
     # speak("Exited chrome driver")
     
     """ 
-    NOTE: Attempt to get all majors and courses.
+    NOTE: The commented block below is the script to get all majors and courses from UC & CSUs
+    NOTE: Note that we already have scraped all the major courses, can be located at "client\src\dataset\uniMajorsCoursesCopy.json"
     """
     # bot = WebBot()
     # file_name = "client/src/dataset/uni_and_classes_3.json"
