@@ -101,11 +101,7 @@ You can then run the webscraping script by
 python main.py
 ```
 
-Running a **Flask** Server
-```
-python backend/server.py
-```
-# To run development website
+# To run development website / Flask Server
 
 ## Install independencies
 
@@ -114,8 +110,13 @@ cd client
 npm install
 ```
 
-## Run server
+## Run dev server
 
 ```
 npm run dev
+```
+
+## Run a **Flask** Server
+```
+python backend/server.py
 ```
