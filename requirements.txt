@@ -2,3 +2,5 @@ selenium
 json-spec
 pyttsx3
 py3-tts
+flask
+flask-cors

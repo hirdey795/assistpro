@@ -1,6 +1,12 @@
+// NOTE: I have set up a REST API Structure for handleSearch, please mess with the endpoints as we
+//       figure out which backend framework we're going to use. 
+//
+// NOTE: Might have to install axios
+
 import React, { useState, useEffect, useRef } from 'react';
 import './SearchComponent.css';
 import data from '../dataset/uniMajorsCoursesCopy.json'; // Import the JSON data
+// import axios from 'axios'; // Use this for POST/GET requests
 
 const SearchComponent = () => {
   const [selectedUni, setSelectedUni] = useState('');
@@ -40,7 +46,7 @@ const SearchComponent = () => {
     const query = { selectedUni, selectedMajor, selectedClass };
 
     try {
-      const response = await fetch('http://your-django-server-endpoint', {
+      const response = await fetch('http://localhost:5000/save-class-info', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(query),
