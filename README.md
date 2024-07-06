@@ -5,9 +5,9 @@ P.S. I have it hosted on a vercel server right now for our demo front end, click
 # TODO:
 - [ ] Update/Format Website with features, look into this [layout](https://github.com/hirdey795/assistpro/blob/main/Extra_README/README_LAYOUT.md)
 - [x] Scrape all UNI/CSU Classes
-- [ ] Return all classes from colleges which are available for the selected class that the user picked. (Frontend/Backend Communication)
 - [x] Make scraping headless optional (not need window popup everytime we scrape)
-- [ ] FastAPI / Flask ?
+- [x] Flask, saves the user input in '../client/src/dataset/class_info.json'
+- [ ] Return all classes from colleges which are available for the selected class that the user picked. (Frontend/Backend Communication)
 
 # DEMO OF SCRAPING
 ![GIF](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHRpbWw1em00MHh4OGxuYW9heHBkajg4eGxyNjZuZHB2N3Bpa2loNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QpDKozmCN3XGi2YHBV/giphy.gif)
