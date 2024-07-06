@@ -76,12 +76,12 @@ Create and activate python venv [Link to setting up a virtual environment](https
 
 First type in terminal
 
-```bash
+```
 python -m venv venv
 ```
 
 Then
-```bash
+```
 # For MAC OS
 source venv/bin/activate
 
@@ -90,26 +90,32 @@ venv/Scripts/activate
 ```
 
 Then install the requirements:
-```bash
+```
 pip install -r requirements.txt
 ```
 
-You can then run the main.py script by 
-```bash
+_Before_ running the webscraping script, please check documentation within the file main.py
+
+You can then run the webscraping script by 
+```
 python main.py
 ```
 
+Running a **Flask** Server
+```
+python backend/server.py
+```
 # To run development website
 
 ## Install independencies
 
-```bash
+```
 cd client
 npm install
 ```
 
 ## Run server
 
-```bash
+```
 npm run dev
 ```
